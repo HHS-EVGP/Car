@@ -1,0 +1,1 @@
+systemctl status tx_code.service
