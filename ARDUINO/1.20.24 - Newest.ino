@@ -1,4 +1,6 @@
-// Last updated on 1/23/2024
+/*
+  Last updated on 1/23/2024
+*/
 
 #include <SoftwareSerial.h>
 
