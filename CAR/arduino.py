@@ -1,106 +1,80 @@
-/*
-  Last updated on 1/20/2024
+# Last updated on 1/23/2024
 
-  - - - Not Yet offical tested - - - 
+def getData(ser):
+    try:
+        ca = "CA,None,None,None,None,None,,"
+        bp = "bp,None"
+        temps = "temps,None,None"
+        data = "data,None"
+        throttle = "throttle,None"
+        motorTemps = "motor,None"
+        
+        if ser.in_waiting > 0:  
+            line1 = ser.readline().decode('latin-1').rstrip()
+            line2 = ser.readline().decode('latin-1').rstrip()
+            line3 = ser.readline().decode('latin-1').rstrip()
+            line4 = ser.readline().decode('latin-1').rstrip()
+            line5 = ser.readline().decode('latin-1').rstrip()
 
-*/
+            if line1.startswith("CA") and len(line1) > 4:
+                ca = line1
+            elif line2.startswith("CA") and len(line2) > 4:
+                ca = line2
+            elif line3.startswith("CA") and len(line3) > 4:
+                ca = line3
+            elif line4.startswith("CA") and len(line4) > 4:
+                ca = line4
+            elif line5.startswith("CA") and len(line5) > 4:
+                ca = line5
 
-#include <SoftwareSerial.h>
+            if line1.startswith("BP") and len(line1) > 3:
+                bp = line1
+            elif line2.startswith("BP") and len(line2) > 3:
+                bp = line2
+            elif line3.startswith("BP") and len(line3) > 3:
+                bp = line3
+            elif line4.startswith("BP") and len(line4) > 3:
+                bp = line4
+            elif line5.startswith("BP") and len(line5) > 3:
+                bp = line5
 
-#define tempSensor1 A0
-#define tempSensor2 A1
+            if line1.startswith("temps") and len(line1) > 4:
+                temps = line1
+            elif line2.startswith("temps") and len(line2) > 4:
+                temps = line2
+            elif line3.startswith("temps") and len(line3) > 4:
+                temps = line3
+            elif line4.startswith("temps") and len(line4) > 4:
+                temps = line4
+            elif line5.startswith("temps") and len(line5) > 4:
+                temps = line5
 
-#define brake A2
+            if line1.startswith("motor") and len(line1) > 4:
+                motorTemps = line1
+            elif line2.startswith("motor") and len(line2) > 4:
+                motorTemps = line2
+            elif line3.startswith("motor") and len(line3) > 4:
+                motorTemps = line3
+            elif line4.startswith("motor") and len(line4) > 4:
+                motorTemps = line4
+            elif line5.startswith("motor") and len(line5) > 4:
+                motorTemps = line5
 
-#define rxPin 3  // should be connected to ring of connector (tx from CA)
-#define txPin 4  // should be connected to tip of connector (rx into CA)
+            if line1.startswith("throttle") and len(line1) > 4:
+                throttle = line1
+            elif line2.startswith("throttle") and len(line2) > 4:
+                throttle = line2
+            elif line3.startswith("throttle") and len(line3) > 4:
+                throttle = line3
+            elif line4.startswith("throttle") and len(line4) > 4:
+                throttle = line4
+            elif line5.startswith("throttle") and len(line5) > 4:
+                throttle = line5
 
-#define motorTemp A3
-
-#define throttle A4
-
-bool newLine = false;
-
-
-SoftwareSerial SUART(rxPin, txPin);  //defines a second serial communication for the CA
-
-String output;
-int dataType = 0;       // keeps track of which type of data is being recieved
-String fullValue = "";  // collects all the digits of a data point
-String output_bp;
-String output_temp;
-
-
-void setup() {
-  Serial.begin(9600);
-
-  pinMode(rxPin, INPUT);
-  pinMode(txPin, OUTPUT);
-
-  pinMode(tempSensor1, INPUT);
-  pinMode(tempSensor2, INPUT);
-  
-  pinMode(throttle, INPUT);
-
-  pinMode(motorTemp, INPUT);
-
-  SUART.begin(9600);
-
-}
-
-
-void loop() {
-  temperatures();
-
-  throttleAndBreak();
-
-  suart();
-  
-  delay(250);
-}
-
-void throttleAndBreak(){
-
-  Serial.println("throttle,"+String(analogRead(throttle)));
-  
-  Serial.println("BP,"+String(analogRead(brake)));
-
-}
-
-void suart(){
-  if (SUART.available()){
-    Serial.print("CA,");
-    newLine = true;
-  }
-  while (SUART.available()){
-    char data = SUART.read();
-    if( 42 < (int)data && (int)data < 60 ){
-      Serial.print(data);
-    }else{
-      Serial.print(",");
-    }
-    
-  }
-  if (newLine){
-    Serial.println(" ");
-    newLine = false;
-  }
-}
-
-void temperatures() {
-
-  Serial.println("temps,"+String(convert_tmp36(analogRead(tempSensor1)))+","+String(convert_tmp36(analogRead(tempSensor2))));
-
-  Serial.println("motor,"+String(analogRead(motorTemp)));
-
-}
-
-double convert_tmp36(int in) { 
-  if(in <= 1){
-    return -5;
-  }
-  if(in >= 270){
-    return -6;
-  }
-  return ((((double)in/1024)*5-0.5)*100);
-}
+            data = f"{ca}|{bp}|{temps}|{motorTemps}|{throttle}"
+            
+        return data
+            
+    except Exception as error:
+        print(f"Error: {error}")
+        return "None - Fail"
