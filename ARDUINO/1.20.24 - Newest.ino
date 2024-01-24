@@ -1,9 +1,4 @@
-/*
-  Last updated on 1/20/2024
-
-  - - - Not Yet offical tested - - - 
-
-*/
+// Last updated on 1/23/2024
 
 #include <SoftwareSerial.h>
 
