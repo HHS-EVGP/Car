@@ -1,6 +1,4 @@
-# Last updated on 1/20/2024
-# - - - Not Yet offical tested - - - 
- 
+# Last updated on 1/23/2024
 import adafruit_rfm9x
 import board
 import busio
@@ -23,7 +21,11 @@ time_ca = time.time()
 try:
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0)
 except:
-    ser = serial.Serial('/dev/ttyACM1', 9600, timeout=0)
+    try:
+        ser = serial.Serial('/dev/ttyACM1', 9600, timeout=0)
+    except Exception as noArduino:
+        print("There seems to be no Arduino ):")
+        exit()
 
 ser.reset_input_buffer()
 
